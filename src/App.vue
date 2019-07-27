@@ -1,5 +1,17 @@
 <script>
+import { mapState, mapActions } from 'vuex'
+import { post } from './utils'
 export default {
+  async onLaunch () {
+    // 校验用户
+    let token = this.user.token
+    const { data } = await post('/check', { token })
+    if (data.code === 0) {
+      console.log(data.data)
+    } else {
+      this.setUser({})
+    }
+  },
   created () {
     // 调用API从本地缓存中获取数据
     /*
@@ -24,13 +36,20 @@ export default {
       mpvue.setStorageSync('logs', logs)
     }
   },
-  log () {
-    console.log(`log at:${Date.now()}`)
+  computed: {
+    ...mapState(['user'])
+  },
+  methods: {
+    ...mapActions(['setUser'])
   }
 }
 </script>
 
 <style lang="stylus">
+page {
+  height: 100%;
+}
+
 .container {
   flex-direction: column;
   align-items: center;
@@ -67,7 +86,7 @@ image {
 
 .btn {
   position: relative;
-  padding: 20rpx;
+  padding: 15rpx;
   border-radius: 15rpx;
   white-space: nowrap;
   font-size: 30rpx;

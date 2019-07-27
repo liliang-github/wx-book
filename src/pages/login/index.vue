@@ -9,20 +9,23 @@
       <div class="form-input">
         <span class="icon"></span>
         <input type="text"
-               placeholder="用户名">
+               placeholder="用户名"
+               v-model.lazy="form.username">
       </div>
       <line />
       <div class="form-input">
         <span class="icon"></span>
         <input type="text"
-               placeholder="密码">
+               placeholder="密码"
+               v-model.lazy="form.password">
       </div>
       <line />
       <space height="30" />
       <div class="form-group">
         <a @click="navigationRegister"
            class="btn reg">注册</a>
-        <a class="btn log">登录</a>
+        <a @click="login"
+           class="btn log">登录</a>
       </div>
     </div>
   </div>
@@ -30,15 +33,39 @@
 <script>
 import Line from '@/components/line'
 import Space from '@/components/space'
+import { mapActions } from 'vuex'
+import { post, loading, loaded, success, info } from '../../utils/index'
+
 export default {
   data () {
     return {
-      bg: ''
+      bg: '',
+      form: {
+        username: '',
+        password: ''
+      }
     }
   },
   methods: {
+    ...mapActions(['setUser']),
     navigationRegister () {
       mpvue.navigateTo({ url: '/pages/register/main' })
+    },
+    async login () {
+      try {
+        loading('登录中...')
+        const { data } = await post('/login', this.form)
+        if (data.code === 0) {
+          mpvue.navigateBack()
+          this.setUser(data.data)
+          success('登录成功')
+        } else {
+          info('用户名或密码错误')
+        }
+      } catch (e) {
+        console.log(e)
+        loaded()
+      }
     }
   },
   components: {

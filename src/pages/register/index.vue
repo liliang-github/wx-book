@@ -12,7 +12,7 @@
                maxlength="10"
                type="text"
                placeholder="请输入用户名"
-               v-model.lazy.trim="form.username">
+               v-model.lazy="form.username">
       </div>
       <line />
       <div class="form-input">
@@ -21,7 +21,7 @@
                maxlength="10"
                type="text"
                placeholder="请输入昵称"
-               v-model.lazy.trim="form.nickname">
+               v-model.lazy="form.nickname">
       </div>
       <line />
       <space height="30" />
@@ -32,27 +32,49 @@
                maxlength="16"
                type="password"
                placeholder="请输入密码"
-               v-model.lazy.trim="form.password">
+               v-model.lazy="form.password">
       </div>
       <line />
       <space height="30" />
-      <a class="btn">注册</a>
+      <a @click.stop.prevent="register"
+         class="btn">注册</a>
     </div>
   </div>
 </template>
 <script>
 import Line from '@/components/line'
 import Space from '@/components/space'
+import { post, loading, loaded, info, success } from '@/utils'
 export default {
   data () {
     return {
       form: {
-
+        username: '',
+        nickname: '',
+        password: ''
       }
     }
   },
+  onReady () {
+    this.form = {}
+  },
   methods: {
-
+    async register () {
+      loading('注册中...')
+      try {
+        const { data } = await post('/register', this.form)
+        if (data.code === 0) {
+          // 注册成功
+          mpvue.navigateBack()
+          success('注册成功')
+        } else {
+          // 用户名或密码无效
+          info(data.data)
+        }
+      } finally {
+        loaded()
+      }
+    }
   },
   components: {
     Line,

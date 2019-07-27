@@ -2,13 +2,14 @@
   "pages": [
     "pages/me/main",
     "pages/index/main",
+    "pages/detail/main",
     "pages/login/main",
     "pages/register/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#07c160",
-    "navigationBarTitleText": "WeChat",
+    "navigationBarTitleText": "看书",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
